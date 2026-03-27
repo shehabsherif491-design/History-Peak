@@ -3,153 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History Peak - الأرشيف الملكي</title>
+    <title>HISTORY PEAK - الأرشيف الملكي</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="History Peak">
     <meta name="theme-color" content="#000000">
 
     <style>
-        :root { --gold: #D4AF37; --black: #000000; --dark-grey: #1a1a1a; }
-        body { background-color: var(--black); color: var(--gold); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-        .container { max-width: 800px; margin: auto; padding: 15px; }
-        header { text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 15px; margin-bottom: 20px; }
-        h1 { font-size: 2.2rem; text-shadow: 2px 2px 8px var(--gold); margin: 5px 0; letter-spacing: 3px; }
-        
-        /* تصميم الأزرار والتنقل */
-        .tab-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background: var(--dark-grey); color: var(--gold); border: 1px solid var(--gold); padding: 12px; cursor: pointer; border-radius: 10px; font-weight: bold; flex: 1; min-width: 100px; transition: 0.3s; }
-        .tab-btn.active { background: var(--gold); color: var(--black); box-shadow: 0 0 10px var(--gold); }
+        :root { --gold: #D4AF37; --black: #000; --dark: #121212; }
+        body { background-color: var(--black); color: var(--gold); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: auto; padding: 15px; }
+        header { text-align: center; border-bottom: 2px solid var(--gold); padding: 20px 0; margin-bottom: 25px; }
+        h1 { font-size: 2.2rem; text-shadow: 0 0 10px var(--gold); letter-spacing: 2px; }
 
-        .content-section { display: none; background: var(--dark-grey); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
-        .active-section { display: block; animation: fadeIn 0.5s; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; background: var(--dark); color: var(--gold); border: 1px solid var(--gold); padding: 12px; cursor: pointer; border-radius: 12px; font-weight: bold; transition: 0.3s; }
+        .tab-btn.active { background: var(--gold); color: var(--black); box-shadow: 0 0 15px var(--gold); }
+
+        .content { display: none; background: var(--dark); padding: 15px; border-radius: 15px; border: 1px solid var(--gold); }
+        .active-content { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* المحاضرات */
-        .doctor-title { background: var(--gold); color: var(--black); padding: 5px 12px; border-radius: 5px; font-weight: bold; margin-bottom: 15px; display: inline-block; }
-        .links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 25px; }
-        .link-card { background: var(--black); border: 1px solid var(--gold); color: var(--gold); padding: 12px; text-decoration: none; text-align: center; border-radius: 10px; font-size: 0.85rem; transition: 0.3s; }
-        .link-card:hover { background: var(--gold); color: var(--black); }
+        .doc-box { margin-bottom: 25px; }
+        .doc-name { background: var(--gold); color: var(--black); padding: 5px 12px; border-radius: 6px; font-weight: bold; display: inline-block; margin-bottom: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .link { background: var(--black); border: 1px solid var(--gold); color: var(--gold); padding: 14px 8px; text-decoration: none; text-align: center; border-radius: 10px; font-size: 0.85rem; }
 
-        /* الجدول الدراسي */
-        table { width: 100%; border-collapse: collapse; color: #fff; font-size: 0.9rem; }
-        th, td { border: 1px solid var(--gold); padding: 10px; text-align: center; }
-        th { background: var(--gold); color: var(--black); }
+        /* الجدول (طبق الأصل من الصورة) */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; color: #fff; margin-top: 10px; font-size: 0.8rem; min-width: 600px; }
+        th, td { border: 1px solid var(--gold); padding: 10px; text-align: center; vertical-align: middle; }
+        th { background: var(--gold); color: var(--black); font-weight: bold; }
+        .day-cell { background: rgba(212, 175, 55, 0.1); font-weight: bold; color: var(--gold); }
 
-        /* التحدي */
-        .opt-btn { width: 100%; background: var(--black); color: var(--gold); border: 1px solid var(--gold); padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; font-weight: bold; }
-        #quiz-result { font-size: 1.3rem; margin-top: 20px; text-shadow: 0 0 5px var(--gold); }
+        /* التحدي والتايمر */
+        #quiz-area { text-align: center; }
+        .timer-container { width: 100%; height: 12px; background: #222; border-radius: 10px; margin: 15px 0; border: 1px solid var(--gold); overflow: hidden; }
+        #timer-bar { height: 100%; background: linear-gradient(90deg, var(--gold), #fff); width: 100%; }
+        #time-text { font-size: 2rem; font-weight: bold; color: #fff; }
+        .opt-btn { width: 100%; background: var(--black); color: var(--gold); border: 1px solid var(--gold); padding: 16px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        
+        footer { text-align: center; margin-top: 40px; font-size: 0.7rem; color: #555; padding: 20px; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>🏛️ HISTORY PEAK</h1>
-        <p>الفرقة الأولى - قسم التاريخ</p>
-    </header>
+    <header><h1>🏛️ HISTORY PEAK</h1><p>الأرشيف الملكي - دفعة شهاب</p></header>
 
-    <div class="tab-container">
-        <button class="tab-btn active" onclick="showTab('lectures')">📚 المحاضرات</button>
-        <button class="tab-btn" onclick="showTab('schedule')">📅 الجدول</button>
-        <button class="tab-btn" onclick="showTab('quiz')">🏆 التحدي</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('docs')">📚 المحاضرات</button>
+        <button class="tab-btn" onclick="showTab('table')">📅 الجدول المعتمد</button>
+        <button class="tab-btn" onclick="showTab('quiz')">🏆 التحدي (9 ثواني)</button>
     </div>
 
-    <div id="lectures" class="content-section active-section">
-        <span class="doctor-title">د. الجوهري</span>
-        <div class="links-grid">
-            <a href="https://drive.google.com/file/d/1a2OmkEIqrhGk7DH0qFSnhcNOir6Bots4/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 1</a>
-            <a href="https://drive.google.com/file/d/10YGHivhJZzDZ4je0syihHRgCX6dqHRg_/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 2</a>
-            <a href="https://drive.google.com/file/d/1LgrigWWxnVifegR-WIr-HW1JflriegLP/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 3</a>
-            <a href="https://drive.google.com/file/d/19ZRdgHaYUxCaH0dZa0WKCA8GEWfBmaHf/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 4</a>
-            <a href="https://drive.google.com/file/d/1MMB5GrCEAaHgDI_drD0PCo6-dY8BVqjI/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 5</a>
-            <a href="https://drive.google.com/file/d/1J_cjGBH5kd-RG_9bwPno68yWl0XNqypG/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 6</a>
-            <a href="https://drive.google.com/file/d/1kgUjF1G949qAByYv0pnfj2ydLvjZjRgP/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 7</a>
-        </div>
-        <span class="doctor-title">د. أسماء عبد الناصر</span>
-        <div class="links-grid">
-            <a href="https://drive.google.com/file/d/1fu4n2pe0ElKrD1nBgm8zRf5ZbHs1Wxzw/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 1</a>
-            <a href="https://drive.google.com/file/d/1YmLHvVD6g9jVnmwGQ45rmGqqiNf1FNv_/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 2</a>
-        </div>
-        <span class="doctor-title">د. إسراء</span>
-        <div class="links-grid">
-            <a href="https://drive.google.com/file/d/1fISSPxpuLqztVrekpLTBftSyhltmQRZq/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 1</a>
-            <a href="https://drive.google.com/file/d/1PfanxXcMr6UPt7hy1dAO_VB_j5497wVn/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 2</a>
-            <a href="https://drive.google.com/file/d/12yjSZ5AA-21eCiRLBZKFtxEQ6on2TO9H/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 3</a>
-        </div>
-        <span class="doctor-title">د. متولي</span>
-        <div class="links-grid">
-            <a href="https://drive.google.com/file/d/1IeWkhnoiBK_mnsmlZAKQWOg6pFMgBgZh/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 1</a>
-            <a href="https://drive.google.com/file/d/1s7_SpewRB7pVLeCBQfmptThSTzFvbEVC/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 2</a>
-        </div>
-        <span class="doctor-title">د. ريهام</span>
-        <div class="links-grid">
-            <a href="https://drive.google.com/file/d/1HMfixC5VXRFFNyky_DhJBXWuMEpE8a5I/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 1</a>
-            <a href="https://drive.google.com/file/d/1FTcnynU6bUORRwC2oHIa_DEIxeKUU3Si/view?usp=drivesdk" class="link-card" target="_blank">محاضرة 2</a>
-        </div>
+    <div id="docs" class="content active-content">
+        <div class="doc-box"><span class="doc-name">د. الجوهري</span><div class="grid">
+            <a href="https://drive.google.com/file/d/1a2OmkEIqrhGk7DH0qFSnhcNOir6Bots4/view?usp=drivesdk" class="link" target="_blank">م 1</a>
+            <a href="https://drive.google.com/file/d/10YGHivhJZzDZ4je0syihHRgCX6dqHRg_/view?usp=drivesdk" class="link" target="_blank">م 2</a>
+            <a href="https://drive.google.com/file/d/1LgrigWWxnVifegR-WIr-HW1JflriegLP/view?usp=drivesdk" class="link" target="_blank">م 3</a>
+            <a href="https://drive.google.com/file/d/19ZRdgHaYUxCaH0dZa0WKCA8GEWfBmaHf/view?usp=drivesdk" class="link" target="_blank">م 4</a>
+            <a href="https://drive.google.com/file/d/1MMB5GrCEAaHgDI_drD0PCo6-dY8BVqjI/view?usp=drivesdk" class="link" target="_blank">م 5</a>
+            <a href="https://drive.google.com/file/d/1J_cjGBH5kd-RG_9bwPno68yWl0XNqypG/view?usp=drivesdk" class="link" target="_blank">م 6</a>
+            <a href="https://drive.google.com/file/d/1kgUjF1G949qAByYv0pnfj2ydLvjZjRgP/view?usp=drivesdk" class="link" target="_blank">م 7</a>
+        </div></div>
+        <div class="doc-box"><span class="doc-name">د. أسماء عبد الناصر</span><div class="grid">
+            <a href="https://drive.google.com/file/d/1fu4n2pe0ElKrD1nBgm8zRf5ZbHs1Wxzw/view?usp=drivesdk" class="link" target="_blank">م 1</a>
+            <a href="https://drive.google.com/file/d/1YmLHvVD6g9jVnmwGQ45rmGqqiNf1FNv_/view?usp=drivesdk" class="link" target="_blank">م 2</a>
+        </div></div>
+        <div class="doc-box"><span class="doc-name">د. إسراء</span><div class="grid">
+            <a href="https://drive.google.com/file/d/1fISSPxpuLqztVrekpLTBftSyhltmQRZq/view?usp=drivesdk" class="link" target="_blank">م 1</a>
+            <a href="https://drive.google.com/file/d/1PfanxXcMr6UPt7hy1dAO_VB_j5497wVn/view?usp=drivesdk" class="link" target="_blank">م 2</a>
+            <a href="https://drive.google.com/file/d/12yjSZ5AA-21eCiRLBZKFtxEQ6on2TO9H/view?usp=drivesdk" class="link" target="_blank">م 3</a>
+        </div></div>
+        <div class="doc-box"><span class="doc-name">د. متولي</span><div class="grid">
+            <a href="https://drive.google.com/file/d/1IeWkhnoiBK_mnsmlZAKQWOg6pFMgBgZh/view?usp=drivesdk" class="link" target="_blank">م 1</a>
+            <a href="https://drive.google.com/file/d/1s7_SpewRB7pVLeCBQfmptThSTzFvbEVC/view?usp=drivesdk" class="link" target="_blank">م 2</a>
+        </div></div>
+        <div class="doc-box"><span class="doc-name">د. ريهام</span><div class="grid">
+            <a href="https://drive.google.com/file/d/1HMfixC5VXRFFNyky_DhJBXWuMEpE8a5I/view?usp=drivesdk" class="link" target="_blank">م 1</a>
+            <a href="https://drive.google.com/file/d/1FTcnynU6bUORRwC2oHIa_DEIxeKUU3Si/view?usp=drivesdk" class="link" target="_blank">م 2</a>
+        </div></div>
     </div>
 
-    <div id="schedule" class="content-section">
-        <table>
-            <tr><th>اليوم</th><th>المادة</th><th>الموعد</th></tr>
-            <tr><td>السبت</td><td>تاريخ مصر القديم</td><td>09:00 ص</td></tr>
-            <tr><td>الأحد</td><td>لغة إنجليزية</td><td>11:00 ص</td></tr>
+    <div id="table" class="content">
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>اليوم/الساعة</th>
+                    <th>9:00 : 10:30</th>
+                    <th>10:30 : 12:10</th>
+                    <th>12:12 : 1:30</th>
+                    <th>1:30 : 3:00</th>
+                </tr>
+                <tr>
+                    <td class="day-cell">السبت</td>
+                    <td>-</td>
+                    <td>مدخل إلى علم الوثائق د/أسماء مدرج د</td>
+                    <td>معالم تاريخ اليونان د/الحسين ق 12</td>
+                    <td>حضارة اليونان والرومان د/الحسين ق 12</td>
+                </tr>
+                <tr>
+                    <td class="day-cell">الأحد</td>
+                    <td>ريادة الأعمال والابتكار د/إسراء د/ريهام مدرج د</td>
+                    <td>-</td>
+                    <td>حضارة مصر القديمة د/سيد فتحي ق 12</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td class="day-cell">الاثنين</td>
+                    <td>علم نفس النمو د/محمد متولي مدرج ج</td>
+                    <td>-</td>
+                    <td>استراتيجيات التعلم النشط د/أحمد الجوهري ق 8</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td class="day-cell">الثلاثاء</td>
+                    <td>منهج البحث التاريخي د/أميرة شافع مدرج ج</td>
+                    <td>تدريب ميداني د/فاطمة مسلم ق 10</td>
+                    <td>التربية القومية د/فاطمة مسلم ق 10</td>
+                    <td>اللغة الإنجليزية د/أحمد إدريس ق 10 / الفنون والعمارة د/سيد فتحي ق 9</td>
+                </tr>
             </table>
-    </div>
-
-    <div id="quiz" class="content-section" style="text-align: center;">
-        <div id="quiz-container">
-            <p id="question-text" style="font-size: 1.2rem; margin-bottom: 20px;">تحميل السؤال...</p>
-            <div id="options"></div>
         </div>
     </div>
 
+    <div id="quiz" class="content">
+        <div id="quiz-area">
+            <div id="time-text">9</div>
+            <div class="timer-container"><div id="timer-bar"></div></div>
+            <p id="q-text" style="font-size: 1.2rem;">استعد لأصعب 20 سؤال في تاريخ مصر!</p>
+            <div id="ans-box">
+                <button class="opt-btn" onclick="start()">ابدأ التحدي (محاولة واحدة فقط) 🔥</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>نظام HISTORY PEAK أوفلاين - لا يُسمح بإعادة المحاولة 🏛️</footer>
 </div>
 
 <script>
-    function showTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+    function showTab(id) {
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active-content'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active-section');
+        document.getElementById(id).classList.add('active-content');
         event.currentTarget.classList.add('active');
-        if(tabId === 'quiz') startQuiz();
+        if(id !== 'quiz') clearInterval(timerInterval);
     }
 
-    const quizData = [
-        { q: "من هو مؤسس الدولة المصرية الحديثة؟", a: ["محمد علي باشا", "سعد زغلول", "جمال عبد الناصر"], correct: 0 },
-        { q: "في أي عام قامت الثورة العرابية؟", a: ["1881", "1919", "1952"], correct: 0 }
+    const questions = [
+        {q: "من هو الملك الذي طرد الهكسوس وأسس الدولة الحديثة؟", a: ["أحمس الأول", "سقنن رع", "كامس"], c: 0},
+        {q: "ما هي عاصمة مصر في عصر الدولة القديمة؟", a: ["طيبة", "منف", "أواريس"], c: 1},
+        {q: "من هي الملكة التي حكمت مصر كفرعون ولبست ملابس الرجال؟", a: ["نفرتيتي", "كليوباترا", "حتشبسوت"], c: 2},
+        {q: "صاحب أول معاهدة سلام في التاريخ هو الملك؟", a: ["رمسيس الثاني", "تحتمس الثالث", "إخناتون"], c: 0},
+        {q: "في أي أسرة تم بناء الهرم الأكبر؟", a: ["الأسرة الثالثة", "الأسرة الرابعة", "الأسرة الخامسة"], c: 1},
+        {q: "من هو الإله الذي كان يرمز له بقرص الشمس في عهد إخناتون؟", a: ["آمون", "رع", "آتون"], c: 2},
+        {q: "القائد الذي انتصر في معركة مجدو هو؟", a: ["تحتمس الثالث", "سيتي الأول", "حور محب"], c: 0},
+        {q: "تم فك رموز اللغة المصرية القديمة بواسطة؟", a: ["بيلزوني", "شامبليون", "ماسيرو"], c: 1},
+        {q: "أي ملك ينسب إليه تمثال أبو الهول؟", a: ["خوفو", "منقرع", "خفرع"], c: 2},
+        {q: "عاصمة الهكسوس في مصر كانت مدينة؟", a: ["أواريس", "تانيس", "تل العمارنة"], c: 0},
+        {q: "الملك الذي وحد القطرين عام 3200 ق.م؟", a: ["مينا", "زوسر", "خع سخموي"], c: 0},
+        {q: "بني سد اللاهون في عهد الملك؟", a: ["أمنمحات الثالث", "سنوسرت الثالث", "منتوهتب الثاني"], c: 0},
+        {q: "من هو مؤسس الأسرة الـ 26 (عصر النهضة)؟", a: ["بسماتيك الأول", "نخاو الثاني", "أبريس"], c: 0},
+        {q: "تم اكتشاف مقبرة توت عنخ آمون عام؟", a: ["1922", "1902", "1952"], c: 0},
+        {q: "إله الموت والحساب عند المصريين القدماء؟", a: ["أنوبيس", "أوزيريس", "حورس"], c: 1},
+        {q: "من هو المهندس الذي بنى هرم زوسر المدرج؟", a: ["إيمحتب", "رع حتب", "حم إيونو"], c: 0},
+        {q: "آخر ملكات الأسرة البطلمية هي؟", a: ["أرسينوي", "كليوباترا السابعة", "برنيكي"], c: 1},
+        {q: "أي رحالة عربي وصف الأهرامات بأنها 'مستودع العلوم'؟", a: ["ابن بطوطة", "الإدريسي", "المسعودي"], c: 2},
+        {q: "أول هرم كامل في التاريخ هو؟", a: ["الهرم الأحمر", "هرم ميدوم", "هرم خوفو"], c: 0},
+        {q: "أين تقع أول جامعة في التاريخ (بر عنخ)؟", a: ["أون (عين شمس)", "منف", "طيبة"], c: 0}
     ];
 
-    let currentQ = 0, score = 0;
+    let cur = 0, score = 0, timerInterval, timeLeft = 9;
 
-    function startQuiz() {
-        if (localStorage.getItem('quiz_done')) {
-            document.getElementById('quiz-container').innerHTML = `<p style="color:red;">عفواً! محاولة واحدة فقط أسبوعياً.<br>درجتك السابقة: ${localStorage.getItem('score')} من ${quizData.length}</p>`;
+    function start() {
+        if(localStorage.getItem('h_peak_done')) {
+            document.getElementById('quiz-area').innerHTML = `<h3 style="color:red;">عفواً! محاولة واحدة أسبوعياً.<br>درجتك: ${localStorage.getItem('h_peak_score')} من 20</h3>`;
             return;
         }
-        loadQ();
+        nextQ();
     }
 
-    function loadQ() {
-        if (currentQ < quizData.length) {
-            const q = quizData[currentQ];
-            document.getElementById('question-text').innerText = q.q;
-            document.getElementById('options').innerHTML = q.a.map((o, i) => `<button class="opt-btn" onclick="ans(${i})">${o}</button>`).join('');
-        } else {
-            localStorage.setItem('quiz_done', 'true');
-            localStorage.setItem('score', score);
-            document.getElementById('quiz-container').innerHTML = `<h3>انتهى التحدي!</h3><p>درجتك: ${score}/${quizData.length}</p>`;
-        }
+    function nextQ() {
+        clearInterval(timerInterval);
+        if(cur < questions.length) {
+            timeLeft = 9;
+            document.getElementById('time-text').innerText = timeLeft;
+            document.getElementById('timer-bar').style.width = "100%";
+            const q = questions[cur];
+            document.getElementById('q-text').innerHTML = `<b>سؤال ${cur+1}:</b> ${q.q}`;
+            document.getElementById('ans-box').innerHTML = q.a.map((opt, i) => `<button class="opt-btn" onclick="check(${i})">${opt}</button>`).join('');
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time-text').innerText = timeLeft;
+                document.getElementById('timer-bar').style.width = (timeLeft / 9 * 100) + "%";
+                if(timeLeft <= 0) { cur++; nextQ(); }
+            }, 1000);
+        } else { finishChallenge(); }
     }
 
-    function ans(i) {
-        if(i === quizData[currentQ].correct) score++;
-        currentQ++;
-        loadQ();
+    function check(i) {
+        if(i === questions[cur].c) score++;
+        cur++;
+        nextQ();
     }
+
+    function finishChallenge() {
+        clearInterval(timerInterval);
+        localStorage.setItem('h_peak_done', 'true');
+        localStorage.setItem('h_peak_score', score);
+        document.getElementById('quiz-area').innerHTML = `<h3>انتهى التحدي! 🏅</h3><p>نتيجتك النهائية: ${score} من 20</p>`;
+    }
+
+    // كود ظهور رسالة التثبيت
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        let deferredPrompt = e;
+        setTimeout(() => {
+            if(confirm("هل تريد تثبيت تطبيق HISTORY PEAK على هاتفك؟")) {
+                deferredPrompt.prompt();
+            }
+        }, 3000);
+    });
 </script>
-
 </body>
 </html>
-
