@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Peak - الأرشيف الملكي</title>
+    <style>
+        :root { --main-bg: #0a0a0a; --card-bg: #1a1a1a; --gold: #d4af37; --text: #e0e0e0; }
+        body { background-color: var(--main-bg); color: var(--text); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; }
+        
+        /* شاشة القفل */
+        #lock-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--main-bg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+        }
+        #lock-screen input {
+            padding: 15px; border-radius: 12px; border: 2px solid var(--gold);
+            background: #222; color: white; margin: 20px 0; text-align: center;
+            font-size: 1.2rem; width: 280px; font-weight: bold;
+        }
+        #lock-screen button {
+            padding: 12px 50px; background: var(--gold); border: none; border-radius: 30px;
+            font-weight: bold; cursor: pointer; color: black; font-size: 1.1rem;
+        }
+
+        header { background: var(--card-bg); padding: 25px; border-bottom: 2px solid var(--gold); text-align: center; }
+        header h1 { color: var(--gold); margin: 0; font-size: 1.8rem; }
+
+        .container { padding: 20px; max-width: 600px; margin: auto; }
+        .dr-card { background: var(--card-bg); margin-bottom: 15px; border-radius: 15px; border: 1px solid #333; overflow: hidden; }
+        .dr-name { background: #252525; padding: 18px; color: var(--gold); font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; }
+        .lectures-list { display: none; padding: 10px; background: #111; }
+        .lecture-item { padding: 12px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .btn-view { color: var(--gold); text-decoration: none; font-size: 0.85rem; border: 1px solid var(--gold); padding: 5px 15px; border-radius: 20px; }
+        .btn-view.disabled { color: #555; border-color: #333; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<div id="lock-screen">
+    <h2 style="color: var(--gold);">HISTORY PEAK 🏛️</h2>
+    <p>أدخل كلمة السر للدخول</p>
+    <input type="password" id="pass-input" placeholder="••••••••••••">
+    <button onclick="checkPass()">دخول</button>
+    <p id="error-msg" style="color: #ff4444; margin-top: 15px; display: none;">الرمز غير صحيح!</p>
+</div>
+
+<header>
+    <h1>HISTORY PEAK 🏛️</h1>
+    <p style="margin-top: 5px; color: var(--gold); opacity: 0.8;">الفرقة الأولى - قسم التاريخ</p>
+</header>
+
+<div class="container" id="doctors-list"></div>
+
+<script>
+    function checkPass() {
+        const pass = document.getElementById('pass-input').value;
+        if (pass === "RORO 8/4/2009") {
+            document.getElementById('lock-screen').style.display = 'none';
+            localStorage.setItem('history_auth_final', 'true');
+        } else {
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    }
+
+    window.onload = function() {
+        if (localStorage.getItem('history_auth_final') === 'true') {
+            document.getElementById('lock-screen').style.display = 'none';
+        }
+        renderDoctors();
+    };
+
+    const doctorsData = [
+        { name: "د. الحسين أحمد (يونان ورومان)", links: ["https://drive.google.com/file/d/16XfqCw7izqR15GOXucZjKUBVrKdCsgXT/view?usp=drivesdk"] },
+        { name: "د. أسماء عبد الناصر (وثائق)", links: ["https://drive.google.com/file/d/1YmLHvVD6g9jVnmwGQ45rmGqqiNf1FNv_/view?usp=drivesdk", "https://drive.google.com/file/d/1fu4n2pe0ElKrD1nBgm8zRf5ZbHs1Wxzw/view?usp=drivesdk"] },
+        { name: "د. إسراء لطفي (ريادة أعمال)", links: ["https://drive.google.com/file/d/12yjSZ5AA-21eCiRLBZKFtxEQ6on2TO9H/view?usp=drivesdk", "https://drive.google.com/file/d/1fISSPxpuLqztVrekpLTBftSyhltmQRZq/view?usp=drivesdk", "https://drive.google.com/file/d/1PfanxXcMr6UPt7hy1dAO_VB_j5497wVn/view?usp=drivesdk"] },
+        { name: "د. ريهام السيد (ريادة أعمال)", links: ["https://drive.google.com/file/d/1FTcnynU6bUORRwC2oHIa_DEIxeKUU3Si/view?usp=drivesdk", "https://drive.google.com/file/d/1HMfixC5VXRFFNyky_DhJBXWuMEpE8a5I/view?usp=drivesdk"] },
+        { name: "د. السيد فتحي (مصر قديمة)", links: ["https://drive.google.com/file/d/19diVfuG-TCbQE3L_br13Hblko3d20tr8/view?usp=drivesdk"] },
+        { name: "د. أحمد الجوهري (تعلم نشط)", links: [
+            "https://drive.google.com/file/d/1LgrigWWxnVifegR-WIr-HW1JflriegLP/view?usp=drivesdk",
+            "https://drive.google.com/file/d/1J_cjGBH5kd-RG_9bwPno68yWl0XNqypG/view?usp=drivesdk",
+            "https://drive.google.com/file/d/1MMB5GrCEAaHgDI_drD0PCo6-dY8BVqjI/view?usp=drivesdk",
+            "https://drive.google.com/file/d/1a2OmkEIqrhGk7DH0qFSnhcNOir6Bots4/view?usp=drivesdk",
+            "https://drive.google.com/file/d/10YGHivhJZzDZ4je0syihHRgCX6dqHRg_/view?usp=drivesdk",
+            "https://drive.google.com/file/d/19ZRdgHaYUxCaH0dZa0WKCA8GEWfBmaHf/view?usp=drivesdk",
+            "https://drive.google.com/file/d/1kgUjF1G949qAByYv0pnfj2ydLvjZjRgP/view?usp=drivesdk"
+        ]},
+        { name: "د. محمد متولي (نفس نمو)", links: ["https://drive.google.com/file/d/1s7_SpewRB7pVLeCBQfmptThSTzFvbEVC/view?usp=drivesdk", "https://drive.google.com/file/d/1IeWkhnoiBK_mnsmlZAKQWOg6pFMgBgZh/view?usp=drivesdk"] },
+        { name: "د. أميرة نافع (منهج بحث)", links: [] },
+        { name: "د. فاطمة مسلم (قومية)", links: [] },
+        { name: "د. أحمد إدريس (إنجليزي)", links: [] },
+        { name: "د. إبراهيم جيد (قدرات عقلية)", links: [] }
+    ];
+
+    function renderDoctors() {
+        const list = document.getElementById('doctors-list');
+        doctorsData.forEach((dr, index) => {
+            const card = document.createElement('div');
+            card.className = 'dr-card';
+            let lecsHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const link = dr.links[i];
+                lecsHTML += `
+                    <div class="lecture-item">
+                        <span>محاضرة ${i + 1}</span>
+                        ${link ? `<a href="${link}" target="_blank" class="btn-view">فتح المحاضرة</a>` : `<span class="btn-view disabled">قريباً</span>`}
+                    </div>`;
+            }
+            card.innerHTML = `
+                <div class="dr-name" onclick="toggleLectures(${index})"><span>🏛️ ${dr.name}</span> <span>▼</span></div>
+                <div class="lectures-list" id="list-${index}">${lecsHTML}</div>`;
+            list.appendChild(card);
+        });
+    }
+
+    function toggleLectures(index) {
+        const el = document.getElementById(`list-${index}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
+</body>
+</html>
             
